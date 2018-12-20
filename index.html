@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>VPN/Proxy Experiment</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+ <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+<body>
+<section class="section">
+ <div class="container">
+  <h1 class="title">
+   VPN Detector
+  </h1>
+  <p class="subtitle">
+   Where I attempt to detect if you're on a VPN or running through a proxy!
+  </p>
+  <div id="app">
+   <p v-bind:title="status">
+    Not started...
+   </p>
+   <button v-on:click="detectVPN">Detectorate</button>
+  </div>
+ </div>
+</section>
+<script>
+ var settings = {
+  endpoint: 'ping.php',
+ };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="assets/network.min.js"></script>
+<script src="assets/detect.js"></script>
+</body>
+</html>

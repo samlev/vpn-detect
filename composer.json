@@ -1,0 +1,5 @@
+{
+    "require": {
+        "geerlingguy/ping": "^1.1"
+    }
+}
