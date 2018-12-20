@@ -10,9 +10,13 @@ use JJG\Ping;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-if (empty($_POST['avg'])) {
+$request_body = file_get_contents('php://input');
+
+if (empty($request_body)) {
     die('Nothing to compare');
 }
+
+$data = json_decode($request_body, true);
 
 // really basic - I don't care too much if it's junk.
 $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
@@ -23,12 +27,17 @@ if (! empty($userIP)) {
 
         $all = [];
         // ping them 5 times
-        for($i = 0; $i < 5; $i++) {
+        for($i = 0; $i < 7; $i++) {
             $all[] = $ping->ping();
         }
 
         // sort the array
         sort($all);
+
+        // drop the highest and the lowest
+        array_shift($all);
+        array_pop($all);
+
         // get an average ping
         $avg = 0;
         foreach ($all as $p) {
@@ -36,7 +45,7 @@ if (! empty($userIP)) {
         }
         $avg = ceil($avg / 5);
 
-        $comp = abs($avg - $_POST['avg']);
+        $comp = abs($avg - ceil($data['avg']));
 
         if ($comp > 150) {
             die('pretty sure you are deffo behind a proxy or VPN');

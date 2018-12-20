@@ -30,11 +30,9 @@ new Vue({
                 this.appState = STATE_COMP;
                 this.status = 'Still Testing... Please wait...';
 
-                this.$http.post('compare.php', {avg: averageLatency, all: allLatencies})
-                    .then(
-                        this.displayResults(response),
-                        this.showError(response)
-                    )
+                axios.post('compare.php', {avg: averageLatency})
+                    .then(this.displayResults)
+                    .catch(this.showError);
             }
         },
         displayResults: function(response) {
