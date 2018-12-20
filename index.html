@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
  <meta charset="utf-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,8 +17,8 @@
    Where I attempt to detect if you're on a VPN or running through a proxy!
   </p>
   <div id="app">
-   <p v-bind:title="status">
-    Not started...
+   <p>
+    {{status}}
    </p>
    <button v-on:click="detectVPN">Detectorate</button>
   </div>
@@ -29,8 +29,8 @@
   endpoint: 'ping.php',
  };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="assets/network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="assets/detect.js"></script>
 </body>
 </html>

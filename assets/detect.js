@@ -2,31 +2,32 @@ const STATE_IDLE = 0;
 const STATE_PING = 1;
 const STATE_COMP = 2;
 
-var app = new Vue({
+new Vue({
     el: '#app',
     data: {
         status: 'Not started...',
-        state: STATE_IDLE
+        appState: STATE_IDLE
     },
     methods: {
         detectVPN: function () {
-            if (this.state === STATE_IDLE) {
-                this.state = STATE_PING;
+            if (this.appState === STATE_IDLE) {
+                console.log('Testing... ');
+                this.appState = STATE_PING;
                 this.status = 'Testing... Please wait...';
 
                 var net = new Network(settings);
 
-                var avg = 0;
-                var all = [];
-
                 net.latency.on('end', this.compareLatency);
+
+                net.latency.start();
             } else {
                 this.status = 'I\'m working on it. Be patient.';
             }
         },
         compareLatency: function(averageLatency, allLatencies) {
-            if (this.state === STATE_PING) {
-                this.state = STATE_COMP;
+            if (this.appState === STATE_PING) {
+                console.log('Average latency: ' + averageLatency);
+                this.appState = STATE_COMP;
                 this.status = 'Still Testing... Please wait...';
 
                 this.$http.post('compare.php', {avg: averageLatency, all: allLatencies})
@@ -37,12 +38,12 @@ var app = new Vue({
             }
         },
         displayResults: function(response) {
-            this.state = STATE_IDLE;
+            this.appState = STATE_IDLE;
 
             this.status = 'Computer says: ' + response.data;
         },
         showError: function(response) {
-            this.state = STATE_IDLE;
+            this.appState = STATE_IDLE;
 
             this.status = 'Something went horribly wrong. Try again, maybe?';
 
