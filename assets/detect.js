@@ -1,6 +1,8 @@
 const STATE_IDLE = 0;
 const STATE_PING = 1;
 const STATE_COMP = 2;
+const STATE_DONE = 3;
+const STATE_ERROR = 4;
 
 new Vue({
     el: '#app',
@@ -10,7 +12,7 @@ new Vue({
     },
     methods: {
         detectVPN: function () {
-            if (this.appState === STATE_IDLE) {
+            if (this.appState === STATE_IDLE || this.appState === STATE_DONE || this.appState === STATE_ERROR) {
                 console.log('Testing... ');
                 this.appState = STATE_PING;
                 this.status = 'Testing... Please wait...';
@@ -36,16 +38,33 @@ new Vue({
             }
         },
         displayResults: function(response) {
-            this.appState = STATE_IDLE;
+            this.appState = STATE_DONE;
 
             this.status = 'Computer says: ' + response.data;
         },
         showError: function(response) {
-            this.appState = STATE_IDLE;
+            this.appState = STATE_ERROR;
 
             this.status = 'Something went horribly wrong. Try again, maybe?';
 
             console.log(response.data);
+        }
+    },
+    computed: {
+        stateClass: function() {
+            switch (this.appState) {
+                case STATE_PING:
+                    return 'is-primary';
+                case STATE_COMP:
+                    return 'is-warning';
+                case STATE_DONE:
+                    return 'is-success';
+                case STATE_ERROR:
+                    return 'is-error';
+                case STATE_IDLE:
+                default:
+                    return 'is-info';
+            }
         }
     }
 });

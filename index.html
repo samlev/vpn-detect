@@ -5,6 +5,7 @@
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <title>VPN/Proxy Experiment</title>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+ <link rel="stylesheet" href="assets/style.css">
  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
@@ -16,12 +17,87 @@
   <p class="subtitle">
    Where I attempt to detect if you're on a VPN or running through a proxy!
   </p>
-  <div id="app">
-   <p>
+  <div id="app" class="has-text-centered">
+   <p class="notification" v-bind:class="stateClass">
     {{status}}
    </p>
-   <button v-on:click="detectVPN">Detectorate</button>
+   <button v-on:click="detectVPN" class="button">Detectorate</button>
   </div>
+  <h2 class="subtitle">
+   So what's actually going on?
+  </h2>
+  <p>
+   This tool works on the concept that your latency to the server should be roughly equivalent to the servers latency to
+   you. While there might be some slight variation, a connection from your computer to my server should take
+   approximately as long to connect as a connection from my server to your computer (or router, as the case may be -
+   wherever your public IP points to).
+  </p>
+  <div class="box has-text-centered">
+   <img src="assets/images/straight-connect.png" alt="straight connection to server">
+  </div>
+  <p>
+   If you're behind a VPN or a proxy, my server will see <i>their</i> public IP instead of yours. What this means is
+   that the latency for you computer to my server <i>also</i> includes the latency from your computer through the proxy
+   to its public IP.
+  </p>
+  <div class="box has-text-centered">
+   <img src="assets/images/proxy-connect.png" alt="connection to server through proxy">
+  </div>
+  <p>
+   So the system is pretty simple - from your browser, I ping the server a bunch of times and get an average latency.
+   I then send that to the server, which pings your public IP a bunch of times, to get its <i>own</i> average latency.
+   I compare the two, and based on how much variation there is, decide if you're likely to be hiding behind a VPN or
+   proxy.
+  </p>
+  <h2 class="subtitle">
+   How reliable is this?
+  </h2>
+  <p>
+   I don't know. You tell me. It's just a theory, and as you can see running a bunch of pings takes some time. I'm also
+   leveraging existing libraries for getting latency via javascript and PHP, because I wasn't interested in rolling my
+   own. If you cared about performance, you could probably figure out a way to do it more efficiently.
+  </p>
+  <h2 class="subtitle">
+   Wouldn't this be really easy to block?
+  </h2>
+  <p>
+   In the current form, yes, however you could potentially use other connections that your app already has to make
+   (i.e. loading data) to get an average connection speed/latency.
+  </p>
+  <p>
+   This idea also relies on the fact that it can ping your public IP - a lot of servers are configured to explicitly
+   not respond to a ping, so it may fall over there, too.
+  </p>
+  <p>
+   Finally, a smart VPN or proxy might detect the calls and replace the average response time in the comparison call,
+   but if your VPN or proxy is actively editing your requests... maybe it's not that good for security.
+  </p>
+  <h2 class="subtitle">
+   What about false positives?
+  </h2>
+  <p>
+   Also very possible just due to local network infrastructure. If your connection through your router adds 20-30ms to
+   your latency, then that could show up as possible VPN usage. However, if your network infrastructure <i>does</i> do
+   this, maybe it's time to buy a new router.
+  </p>
+  <p>
+   It's also possible that random fluctuations in the networking gear on the server end could cause false positives, or
+   even just a heavy load on the server could cause it to have random slow-downs that are interpreted as a latency issue
+   despite actually just being a slow processing/response time.
+  </p>
+  <h2 class="subtitle">
+   Can I see the code?
+  </h2>
+  <p>
+   Sure. It's available on github at <a href="https://github.com/samlev/vpn-detect">samlev/vpn-detect</a>. For this
+   version, the grunt work is being done by <a href="https://github.com/nesk/network.js">network.js</a> and on the
+   server <a href="https://github.com/geerlingguy/Ping">Ping for PHP</a>. Again, there's probably much more reliable and
+   efficient ways of achieving this, but I just wanted to test if the concept would even work at all.
+  </p>
+  <p>
+   I wouldn't suggest using this in production anywhere, but it's just an experiment to see if you <i>can</i> detect VPN
+   or proxy usage with just PHP and javascript.
+  </p>
  </div>
 </section>
 <script>

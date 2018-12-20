@@ -48,15 +48,15 @@ if (! empty($userIP)) {
         $comp = abs($avg - ceil($data['avg']));
 
         if ($comp > 150) {
-            die('pretty sure you are deffo behind a proxy or VPN');
+            die('Proxy or VPN very likely (variance > 150ms)');
         } elseif ($comp > 100) {
-            die('you are probably behind a VPN or proxy');
-        } elseif ($comp > 50) {
-            die('yeah, possibly. Maybe. Hard to be sure.');
-        } elseif ($comp > 20) {
-            die('probably not...');
+            die('Proxy or VPN likely (variance > 100ms)');
+        } elseif ($comp > 30) {
+            die('Proxy or VPN possible (variance > 30ms)');
+        } elseif ($comp > 10) {
+            die('Proxy or VPN unlikely (variance > 10ms)');
         } else {
-            die('you are very consistent.');
+            die('No VPN or Proxy (<=10ms variance)');
         }
     } catch (Exception $e) {
         die('Could not check connection to you from the server');
