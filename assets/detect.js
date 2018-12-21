@@ -7,7 +7,7 @@ const STATE_ERROR = 4;
 new Vue({
     el: '#app',
     data: {
-        status: 'Not started...',
+        status: 'Not started... Press the button below to begin',
         appState: STATE_IDLE
     },
     methods: {
