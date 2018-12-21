@@ -45,7 +45,7 @@ new Vue({
         showError: function(response) {
             this.appState = STATE_ERROR;
 
-            this.status = 'Something went horribly wrong. Try again, maybe?';
+            this.status = 'Something went horribly wrong. It\'s likely that the device attached to your public IP refuses to respond to ping (leading to PHP timing out)';
 
             console.log(response.data);
         }
